@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hospital Montclair</title>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap');
+
+    :root {
+      --bg: #171716;
+      --bg-soft: #222220;
+
+      --panel: #f4f1eb;
+      --panel-light: #faf9f6;
+
+      --text: #242422;
+      --text-soft: #77736b;
+
+      --gold: #b49a68;
+      --gold-light: #d2bd91;
+
+      --red: #9d3f3f;
+      --red-dark: #793333;
+
+      --border: rgba(180, 154, 104, 0.32);
+
+      --shadow:
+        0 20px 60px rgba(0, 0, 0, 0.28),
+        0 4px 15px rgba(0, 0, 0, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Inter", Arial, sans-serif;
+    }
+
+    body {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      color: var(--text);
+
+      background:
+        radial-gradient(
+          circle at 20% 20%,
+          rgba(180, 154, 104, 0.08),
+          transparent 35%
+        ),
+        radial-gradient(
+          circle at 80% 80%,
+          rgba(255, 255, 255, 0.04),
+          transparent 35%
+        ),
+        linear-gradient(
+          135deg,
+          #111110,
+          #20201e 55%,
+          #151514
+        );
+    }
+
+    /* ==============================
+       CONTAINER PRINCIPAL
+    ============================== */
+
+    .tv-container {
+      display: flex;
+
+      width: 94vw;
+      height: 88vh;
+
+      gap: 20px;
+
+      position: relative;
+    }
+
+    /* Linha decorativa superior */
+
+    .tv-container::before {
+      content: "";
+
+      position: absolute;
+
+      top: -14px;
+      left: 4px;
+      right: 4px;
+
+      height: 2px;
+
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          var(--gold),
+          transparent
+        );
+
+      opacity: 0.6;
+    }
+
+    .left-panel {
+      display: flex;
+      flex-direction: column;
+
+      width: 32%;
+
+      gap: 20px;
+    }
+
+    .right-panel {
+      display: flex;
+      flex-direction: column;
+
+      width: 68%;
+
+      gap: 20px;
+    }
+
+    /* ==============================
+       BOX BASE
+    ============================== */
+
+    .box {
+      position: relative;
+
+      background:
+        linear-gradient(
+          145deg,
+          var(--panel-light),
+          var(--panel)
+        );
+
+      border: 1px solid var(--border);
+
+      border-radius: 20px;
+
+      padding: 30px;
+
+      display: flex;
+      flex-direction: column;
+
+      justify-content: center;
+      align-items: center;
+
+      text-align: center;
+
+      box-shadow: var(--shadow);
+
+      overflow: hidden;
+    }
+
+    /* brilho discreto */
+
+    .box::before {
+      content: "";
+
+      position: absolute;
+
+      top: 0;
+      left: 0;
+
+      width: 100%;
+      height: 4px;
+
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          var(--gold),
+          transparent
+        );
+
+      opacity: 0.75;
+    }
+
+    /* textura extremamente discreta */
+
+    .box::after {
+      content: "";
+
+      position: absolute;
+
+      width: 300px;
+      height: 300px;
+
+      top: -180px;
+      right: -160px;
+
+      border-radius: 50%;
+
+      background: rgba(180, 154, 104, 0.045);
+
+      pointer-events: none;
+    }
+
+    /* ==============================
+       TÍTULOS
+    ============================== */
+
+    .box-title {
+      position: relative;
+      z-index: 2;
+
+      color: var(--text-soft);
+
+      font-size: 1.15vw;
+
+      font-weight: 700;
+
+      letter-spacing: 0.18em;
+
+      text-transform: uppercase;
+
+      margin-bottom: 18px;
+    }
+
+    .box-title::after {
+      content: "";
+
+      display: block;
+
+      width: 34px;
+      height: 2px;
+
+      margin: 10px auto 0;
+
+      background: var(--gold);
+    }
+
+    /* ==============================
+       PAINEL LOCAL
+    ============================== */
+
+    .local-box {
+      flex: 1;
+
+      min-height: 35%;
+    }
+
+    .local-number {
+      position: relative;
+      z-index: 2;
+
+      color: var(--red);
+
+      font-size: 8vw;
+
+      font-weight: 800;
+
+      line-height: 0.9;
+
+      letter-spacing: -0.06em;
+
+      text-shadow:
+        0 4px 15px rgba(157, 63, 63, 0.15);
+    }
+
+    .local-type {
+      position: relative;
+      z-index: 2;
+
+      color: var(--text);
+
+      font-size: 1.15vw;
+
+      font-weight: 700;
+
+      letter-spacing: 0.18em;
+
+      text-transform: uppercase;
+
+      margin-top: 20px;
+    }
+
+    /* ==============================
+       HISTÓRICO
+    ============================== */
+
+    .history-box {
+      flex: 1.2;
+
+      justify-content: flex-start;
+      align-items: stretch;
+
+      padding: 28px 30px;
+    }
+
+    .history-box .box-title {
+      font-size: 1vw;
+
+      align-self: center;
+
+      margin-bottom: 22px;
+    }
+
+    #history-list {
+      list-style: none;
+
+      width: 100%;
+
+      color: var(--text);
+
+      font-size: 1.05vw;
+
+      font-weight: 600;
+
+      text-align: left;
+    }
+
+    #history-list li {
+      position: relative;
+
+      display: flex;
+      align-items: center;
+
+      min-height: 45px;
+
+      margin-bottom: 5px;
+
+      padding: 8px 4px 8px 15px;
+
+      border-bottom: 1px solid rgba(36, 36, 34, 0.08);
+
+      transition: background 0.2s ease;
+    }
+
+    #history-list li::before {
+      content: "";
+
+      position: absolute;
+
+      left: 0;
+
+      width: 3px;
+      height: 22px;
+
+      border-radius: 5px;
+
+      background: var(--gold);
+    }
+
+    #history-list li:first-child {
+      color: var(--red);
+
+      font-weight: 800;
+    }
+
+    /* ==============================
+       PACIENTE
+    ============================== */
+
+    .patient-box {
+      flex: 3;
+
+      min-height: 65%;
+
+      padding: 40px;
+    }
+
+    .patient-box .box-title {
+      font-size: 1.25vw;
+
+      margin-bottom: 35px;
+    }
+
+    .patient-name {
+      position: relative;
+      z-index: 2;
+
+      max-width: 95%;
+
+      color: var(--red);
+
+      font-family: "Inter", Arial, sans-serif;
+
+      font-size: 6.5vw;
+
+      font-weight: 800;
+
+      line-height: 1.05;
+
+      letter-spacing: -0.045em;
+
+      word-break: break-word;
+
+      text-wrap: balance;
+
+      text-shadow:
+        0 5px 25px rgba(157, 63, 63, 0.13);
+    }
+
+    /* pequeno indicador visual */
+
+    .patient-box .box-title::before {
+      content: "";
+
+      display: inline-block;
+
+      width: 8px;
+      height: 8px;
+
+      margin-right: 10px;
+
+      border-radius: 50%;
+
+      background: var(--gold);
+
+      box-shadow:
+        0 0 0 4px rgba(180, 154, 104, 0.12);
+    }
+
+    /* ==============================
+       LOGO
+    ============================== */
+
+    .logo-box {
+      flex: 1;
+
+      min-height: 20%;
+
+      flex-direction: row;
+
+      justify-content: center;
+
+      gap: 18px;
+
+      padding: 20px;
+    }
+
+    .logo-symbol {
+      width: 38px;
+      height: 38px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      color: var(--panel);
+
+      background: var(--text);
+
+      border-radius: 10px;
+
+      font-size: 22px;
+      font-weight: 800;
+
+      box-shadow:
+        0 5px 15px rgba(0, 0, 0, 0.18);
+    }
+
+    .logo-text {
+      color: var(--text);
+
+      font-family: "Playfair Display", Georgia, serif;
+
+      font-size: 2vw;
+
+      font-weight: 700;
+
+      letter-spacing: 0.02em;
+    }
+
+    .logo-text span {
+      color: var(--gold);
+
+      font-family: "Inter", Arial, sans-serif;
+
+      font-size: 0.75em;
+
+      font-weight: 600;
+
+      letter-spacing: 0.2em;
+
+      margin-left: 8px;
+    }
+
+    /* ==============================
+       ANIMAÇÃO DE CHAMADA
+    ============================== */
+
+    @keyframes flash {
+      0% {
+        transform: scale(1);
+        box-shadow: var(--shadow);
+      }
+
+      20% {
+        transform: scale(1.012);
+
+        box-shadow:
+          0 0 0 4px rgba(180, 154, 104, 0.2),
+          0 0 45px rgba(180, 154, 104, 0.25),
+          var(--shadow);
+      }
+
+      50% {
+        transform: scale(1.006);
+      }
+
+      100% {
+        transform: scale(1);
+        box-shadow: var(--shadow);
+      }
+    }
+
+    .flash {
+      animation: flash 0.7s ease 3;
+    }
+
+    /* ==============================
+       RESPONSIVIDADE
+    ============================== */
+
+    @media (max-width: 900px) {
+
+      .tv-container {
+        width: 96vw;
+        height: 92vh;
+        gap: 12px;
+      }
+
+      .left-panel,
+      .right-panel {
+        gap: 12px;
+      }
+
+      .box {
+        border-radius: 14px;
+        padding: 18px;
+      }
+
+      .box-title {
+        font-size: 1.8vw;
+      }
+
+      .history-box .box-title {
+        font-size: 1.5vw;
+      }
+
+      #history-list {
+        font-size: 1.4vw;
+      }
+
+      .local-type {
+        font-size: 1.7vw;
+      }
+
+      .logo-text {
+        font-size: 2.5vw;
+      }
+    }
+
+    /* ==============================
+       TELAS MUITO GRANDES
+    ============================== */
+
+    @media (min-width: 1800px) {
+
+      .tv-container {
+        max-width: 1800px;
+        max-height: 900px;
+      }
+
+      .patient-name {
+        font-size: 110px;
+      }
+
+      .local-number {
+        font-size: 145px;
+      }
+
+      .box-title {
+        font-size: 20px;
+      }
+
+      .local-type {
+        font-size: 20px;
+      }
+
+      #history-list {
+        font-size: 19px;
+      }
+
+      .logo-text {
+        font-size: 34px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="tv-container">
+
+    <!-- ==================================
+         PAINEL ESQUERDO
+    ================================== -->
+
+    <div class="left-panel">
+
+      <!-- Local -->
+      <div class="box local-box">
+
+        <div class="box-title" id="local-tipo">
+          GUICHÊ
+        </div>
+
+        <div class="local-number" id="local-numero">
+          --
+        </div>
+
+        <div class="local-type">
+          LOCAL DE ATENDIMENTO
+        </div>
+
+      </div>
+
+
+      <!-- Histórico -->
+      <div class="box history-box">
+
+        <div class="box-title">
+          ÚLTIMAS CHAMADAS
+        </div>
+
+        <ul id="history-list"></ul>
+
+      </div>
+
+    </div>
+
+
+    <!-- ==================================
+         PAINEL DIREITO
+    ================================== -->
+
+    <div class="right-panel">
+
+      <!-- Paciente -->
+      <div class="box patient-box">
+
+        <div class="box-title">
+          PACIENTE CHAMADO
+        </div>
+
+        <div class="patient-name" id="patient-name">
+          AGUARDANDO...
+        </div>
+
+      </div>
+
+
+      <!-- Logo -->
+      <div class="box logo-box">
+
+        <div class="logo-symbol">
+          +
+        </div>
+
+        <div class="logo-text">
+          Hospital Montclair
+          <span>ATENDIMENTO</span>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <script>
+
+    let ultimoId = null;
+
+    /*
+     * ==========================================
+     * ATUALIZAÇÃO DA TV
+     * ==========================================
+     */
+
+    function atualizar() {
+
+      fetch("/tv/chamada")
+
+        .then(response => {
+
+          if (!response.ok) {
+            throw new Error("Erro HTTP: " + response.status);
+          }
+
+          return response.json();
+
+        })
+
+        .then(data => {
+
+          const chamada = data.chamada;
+          const historico = data.historico || [];
+
+
+          /*
+           * ======================================
+           * CHAMADA ATUAL
+           * ======================================
+           */
+
+          if (chamada) {
+
+            const localTipo =
+              chamada.localTipo || "GUICHÊ";
+
+            const localNumero =
+              chamada.localNumero || "--";
+
+            const paciente =
+              chamada.paciente || "AGUARDANDO...";
+
+
+            document.getElementById("local-tipo")
+              .innerText = localTipo;
+
+
+            document.getElementById("local-numero")
+              .innerText = localNumero;
+
+
+            document.getElementById("patient-name")
+              .innerText = paciente;
+
+
+            /*
+             * Nova chamada
+             */
+
+            if (chamada.id !== ultimoId) {
+
+              ultimoId = chamada.id;
+
+              const patientBox =
+                document.querySelector(".patient-box");
+
+
+              patientBox.classList.remove("flash");
+
+
+              /*
+               * Força reflow para reiniciar
+               * a animação
+               */
+
+              void patientBox.offsetWidth;
+
+
+              patientBox.classList.add("flash");
+            }
+
+          }
+
+
+          /*
+           * ======================================
+           * HISTÓRICO
+           * ======================================
+           */
+
+          const list =
+            document.getElementById("history-list");
+
+
+          list.innerHTML = "";
+
+
+          historico
+            .slice(0, 4)
+            .forEach((h, index) => {
+
+              const li =
+                document.createElement("li");
+
+
+              const tipo =
+                h.localTipo
+                  ? h.localTipo.substring(0, 4).toUpperCase()
+                  : "GUIC";
+
+
+              li.innerText =
+                `${tipo}. ${h.localNumero || "--"}  —  ${h.paciente || "---"}`;
+
+
+              list.appendChild(li);
+
+            });
+
+        })
+
+        .catch(error => {
+
+          console.log(
+            "Erro ao buscar chamada:",
+            error
+          );
+
+        });
+
+    }
+
+
+    /*
+     * ==========================================
+     * PRIMEIRA ATUALIZAÇÃO
+     * ==========================================
+     */
+
+    atualizar();
+
+
+    /*
+     * ==========================================
+     * POLLING
+     * ==========================================
+     *
+     * Consulta o servidor a cada 2 segundos.
+     */
+
+    setInterval(atualizar, 2000);
+
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Atendimento | Hospital Montclair</title>
+
+  <style>
+
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap');
+
+
+    /* =========================================
+       VARIÁVEIS
+    ========================================= */
+
+    :root {
+
+      --bg: #171716;
+      --bg-light: #222220;
+
+      --panel: #f4f1eb;
+      --panel-light: #faf9f6;
+
+      --text: #242422;
+      --text-soft: #77736b;
+
+      --gold: #b49a68;
+      --gold-light: #d2bd91;
+
+      --red: #9d3f3f;
+      --red-dark: #793333;
+
+      --border: rgba(180, 154, 104, 0.32);
+
+      --input-border: #d9d4ca;
+
+      --shadow:
+        0 25px 70px rgba(0, 0, 0, 0.30),
+        0 5px 20px rgba(0, 0, 0, 0.12);
+    }
+
+
+    /* =========================================
+       RESET
+    ========================================= */
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+
+      font-family: "Inter", Arial, sans-serif;
+    }
+
+
+    /* =========================================
+       BODY
+    ========================================= */
+
+    body {
+
+      min-height: 100vh;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      padding: 30px;
+
+      background:
+        radial-gradient(
+          circle at 15% 15%,
+          rgba(180, 154, 104, 0.09),
+          transparent 32%
+        ),
+
+        radial-gradient(
+          circle at 85% 85%,
+          rgba(255, 255, 255, 0.035),
+          transparent 35%
+        ),
+
+        linear-gradient(
+          135deg,
+          #111110,
+          #20201e 55%,
+          #151514
+        );
+
+      color: var(--text);
+    }
+
+
+    /* =========================================
+       CONTAINER
+    ========================================= */
+
+    .container {
+
+      position: relative;
+
+      width: 100%;
+      max-width: 620px;
+
+      padding: 48px 48px 44px;
+
+      background:
+        linear-gradient(
+          145deg,
+          var(--panel-light),
+          var(--panel)
+        );
+
+      border: 1px solid var(--border);
+
+      border-radius: 24px;
+
+      box-shadow: var(--shadow);
+
+      overflow: hidden;
+    }
+
+
+    /* Linha dourada superior */
+
+    .container::before {
+
+      content: "";
+
+      position: absolute;
+
+      top: 0;
+      left: 0;
+
+      width: 100%;
+      height: 4px;
+
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          var(--gold),
+          transparent
+        );
+
+      opacity: 0.85;
+    }
+
+
+    /* Brilho decorativo */
+
+    .container::after {
+
+      content: "";
+
+      position: absolute;
+
+      width: 280px;
+      height: 280px;
+
+      top: -180px;
+      right: -140px;
+
+      border-radius: 50%;
+
+      background:
+        rgba(180, 154, 104, 0.05);
+
+      pointer-events: none;
+    }
+
+
+    /* =========================================
+       CABEÇALHO
+    ========================================= */
+
+    .header {
+
+      position: relative;
+
+      display: flex;
+      align-items: center;
+
+      gap: 18px;
+
+      margin-bottom: 38px;
+    }
+
+
+    /* Símbolo */
+
+    .logo-symbol {
+
+      flex-shrink: 0;
+
+      width: 54px;
+      height: 54px;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      border-radius: 14px;
+
+      background: var(--text);
+
+      color: var(--panel-light);
+
+      font-size: 28px;
+      font-weight: 700;
+
+      box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+
+    .header-text {
+
+      display: flex;
+      flex-direction: column;
+
+      gap: 4px;
+    }
+
+
+    .header-text h2 {
+
+      color: var(--text);
+
+      font-family: "Playfair Display", Georgia, serif;
+
+      font-size: 32px;
+
+      font-weight: 700;
+
+      letter-spacing: -0.02em;
+    }
+
+
+    .header-text p {
+
+      color: var(--text-soft);
+
+      font-size: 13px;
+
+      font-weight: 600;
+
+      letter-spacing: 0.13em;
+
+      text-transform: uppercase;
+    }
+
+
+    /* =========================================
+       DIVISOR
+    ========================================= */
+
+    .divider {
+
+      width: 100%;
+      height: 1px;
+
+      margin-bottom: 30px;
+
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          rgba(180, 154, 104, 0.45),
+          transparent
+        );
+    }
+
+
+    /* =========================================
+       FORMULÁRIO
+    ========================================= */
+
+    .form-group {
+
+      margin-bottom: 23px;
+    }
+
+
+    .form-group label {
+
+      display: block;
+
+      margin-bottom: 9px;
+
+      color: var(--text);
+
+      font-size: 12px;
+
+      font-weight: 700;
+
+      letter-spacing: 0.13em;
+
+      text-transform: uppercase;
+    }
+
+
+    .required {
+
+      color: var(--red);
+
+      margin-left: 3px;
+    }
+
+
+    /* =========================================
+       INPUTS E SELECT
+    ========================================= */
+
+    input,
+    select {
+
+      width: 100%;
+
+      height: 56px;
+
+      padding: 0 17px;
+
+      border: 1px solid var(--input-border);
+
+      border-radius: 11px;
+
+      outline: none;
+
+      background: rgba(255, 255, 255, 0.62);
+
+      color: var(--text);
+
+      font-size: 15px;
+
+      font-weight: 500;
+
+      transition:
+        border-color 0.25s ease,
+        box-shadow 0.25s ease,
+        background 0.25s ease,
+        transform 0.2s ease;
+    }
+
+
+    input::placeholder {
+
+      color: #aaa59c;
+    }
+
+
+    input:hover,
+    select:hover {
+
+      border-color: #c7b99e;
+
+      background: rgba(255, 255, 255, 0.82);
+    }
+
+
+    input:focus,
+    select:focus {
+
+      border-color: var(--gold);
+
+      background: #fff;
+
+      box-shadow:
+        0 0 0 4px rgba(180, 154, 104, 0.12);
+    }
+
+
+    /* =========================================
+       SELECT
+    ========================================= */
+
+    select {
+
+      cursor: pointer;
+
+      appearance: none;
+
+      background-image:
+        linear-gradient(45deg, transparent 50%, var(--gold) 50%),
+        linear-gradient(135deg, var(--gold) 50%, transparent 50%);
+
+      background-position:
+        calc(100% - 20px) 24px,
+        calc(100% - 15px) 24px;
+
+      background-size:
+        5px 5px,
+        5px 5px;
+
+      background-repeat: no-repeat;
+    }
+
+
+    /* =========================================
+       ÁREA DE FOTO
+    ========================================= */
+
+    .file-wrapper {
+
+      position: relative;
+    }
+
+
+    input[type="file"] {
+
+      height: auto;
+
+      padding: 14px 16px;
+
+      cursor: pointer;
+
+      color: var(--text-soft);
+
+      font-size: 13px;
+
+      background: rgba(255, 255, 255, 0.45);
+    }
+
+
+    input[type="file"]::file-selector-button {
+
+      margin-right: 12px;
+
+      padding: 9px 14px;
+
+      border: 1px solid var(--gold);
+
+      border-radius: 8px;
+
+      background: transparent;
+
+      color: var(--text);
+
+      font-size: 12px;
+
+      font-weight: 700;
+
+      cursor: pointer;
+
+      transition: all 0.2s ease;
+    }
+
+
+    input[type="file"]::file-selector-button:hover {
+
+      background: var(--gold);
+
+      color: white;
+    }
+
+
+    /* =========================================
+       BOTÃO
+    ========================================= */
+
+    .button-area {
+
+      margin-top: 32px;
+    }
+
+
+    button {
+
+      position: relative;
+
+      width: 100%;
+
+      height: 58px;
+
+      border: none;
+
+      border-radius: 11px;
+
+      background:
+        linear-gradient(
+          135deg,
+          var(--red),
+          var(--red-dark)
+        );
+
+      color: white;
+
+      font-size: 14px;
+
+      font-weight: 700;
+
+      letter-spacing: 0.13em;
+
+      text-transform: uppercase;
+
+      cursor: pointer;
+
+      box-shadow:
+        0 10px 25px rgba(121, 51, 51, 0.22);
+
+      overflow: hidden;
+
+      transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        filter 0.2s ease;
+    }
+
+
+    button::before {
+
+      content: "";
+
+      position: absolute;
+
+      top: 0;
+      left: -100%;
+
+      width: 70%;
+      height: 100%;
+
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          rgba(255,255,255,0.18),
+          transparent
+        );
+
+      transform: skewX(-20deg);
+
+      transition: left 0.6s ease;
+    }
+
+
+    button:hover {
+
+      transform: translateY(-2px);
+
+      box-shadow:
+        0 14px 30px rgba(121, 51, 51, 0.30);
+
+      filter: brightness(1.05);
+    }
+
+
+    button:hover::before {
+
+      left: 130%;
+    }
+
+
+    button:active {
+
+      transform: translateY(0);
+
+      box-shadow:
+        0 6px 15px rgba(121, 51, 51, 0.20);
+    }
+
+
+    /* =========================================
+       RODAPÉ
+    ========================================= */
+
+    .footer {
+
+      display: flex;
+
+      justify-content: center;
+
+      align-items: center;
+
+      gap: 8px;
+
+      margin-top: 25px;
+
+      color: #99948b;
+
+      font-size: 11px;
+
+      font-weight: 500;
+
+      letter-spacing: 0.08em;
+    }
+
+
+    .footer-dot {
+
+      width: 5px;
+      height: 5px;
+
+      border-radius: 50%;
+
+      background: var(--gold);
+    }
+
+
+    /* =========================================
+       RESPONSIVIDADE
+    ========================================= */
+
+    @media (max-width: 650px) {
+
+      body {
+        padding: 18px;
+      }
+
+      .container {
+
+        padding: 35px 25px 30px;
+
+        border-radius: 18px;
+      }
+
+      .header-text h2 {
+
+        font-size: 27px;
+      }
+
+      .logo-symbol {
+
+        width: 48px;
+        height: 48px;
+
+        font-size: 24px;
+      }
+    }
+
+
+    @media (max-width: 430px) {
+
+      .container {
+
+        padding: 30px 20px 25px;
+      }
+
+      .header {
+
+        margin-bottom: 28px;
+      }
+
+      .header-text h2 {
+
+        font-size: 24px;
+      }
+
+      .header-text p {
+
+        font-size: 10px;
+      }
+
+      input,
+      select {
+
+        height: 52px;
+
+        font-size: 14px;
+      }
+
+      button {
+
+        height: 55px;
+
+        font-size: 12px;
+      }
+    }
+
+  </style>
+</head>
+
+
+<body>
+
+  <div class="container">
+
+    <!-- =====================================
+         CABEÇALHO
+    ====================================== -->
+
+    <div class="header">
+
+      <div class="logo-symbol">
+        +
+      </div>
+
+      <div class="header-text">
+
+        <h2>Atendimento</h2>
+
+        <p>Cadastro de paciente</p>
+
+      </div>
+
+    </div>
+
+
+    <div class="divider"></div>
+
+
+    <!-- =====================================
+         FORMULÁRIO
+    ====================================== -->
+
+    <div class="form-group">
+
+      <label for="nome">
+        Nome do paciente
+        <span class="required">*</span>
+      </label>
+
+      <input
+        id="nome"
+        type="text"
+        placeholder="Digite o nome completo"
+        autocomplete="name"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="cpf">
+        CPF
+        <span class="required">*</span>
+      </label>
+
+      <input
+        id="cpf"
+        type="text"
+        placeholder="Digite o CPF"
+        autocomplete="off"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="tipo">
+        Tipo de atendimento
+      </label>
+
+      <select id="tipo">
+
+        <option value="Convenio">
+          Convênio
+        </option>
+
+        <option value="Particular">
+          Particular
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="foto">
+        Foto do paciente
+      </label>
+
+      <div class="file-wrapper">
+
+        <input
+          type="file"
+          id="foto"
+          accept="image/*"
+        >
+
+      </div>
+
+    </div>
+
+
+    <!-- =====================================
+         BOTÃO
+    ====================================== -->
+
+    <div class="button-area">
+
+      <button onclick="cadastrar()">
+
+        Cadastrar paciente
+
+      </button>
+
+    </div>
+
+
+    <!-- =====================================
+         RODAPÉ
+    ====================================== -->
+
+    <div class="footer">
+
+      <span>ATENDIMENTO</span>
+
+      <span class="footer-dot"></span>
+
+      <span>Hospital Montclair</span>
+
+    </div>
+
+  </div>
+
+
+  <script>
+
+    function cadastrar() {
+
+      fetch("http://localhost:3000/atendimento", {
+
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+
+          nome: nome.value,
+
+          cpf: cpf.value,
+
+          tipo: tipo.value
+
+        })
+
+      })
+
+      .then(response => {
+
+        if (!response.ok) {
+          throw new Error("Erro ao cadastrar paciente.");
+        }
+
+        return response.json().catch(() => ({}));
+
+      })
+
+      .then(() => {
+
+        alert("Paciente enviado para triagem.");
+
+      })
+
+      .catch(error => {
+
+        console.error(error);
+
+        alert("Não foi possível cadastrar o paciente.");
+
+      });
+
+    }
+
+  </script>
+
+</body>
+</html>

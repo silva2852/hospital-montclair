@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hospital Montclair - Login</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+
+      font-family: Arial, Helvetica, sans-serif;
+
+      /* Fundo neutro */
+      background: #e9ecef;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      padding: 20px;
+    }
+
+    /* Painel de Login */
+    .container {
+      width: 100%;
+      max-width: 410px;
+
+      background: #ffffff;
+
+      padding: 35px 32px;
+
+      border-radius: 20px;
+
+      border: 1px solid #e0e0e0;
+
+      box-shadow:
+        0 15px 35px rgba(0, 0, 0, 0.12);
+
+      text-align: center;
+
+      animation: aparecer 0.6s ease;
+    }
+
+    /* Animação */
+    @keyframes aparecer {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Área da Logo */
+    .logo-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      margin-bottom: 25px;
+    }
+
+    /* Logo em destaque */
+    .logo-area img {
+      display: block;
+
+      width: 150px;
+      max-width: 70%;
+
+      height: auto;
+
+      margin: 0 auto 15px;
+
+      object-fit: contain;
+
+      filter: drop-shadow(0 5px 8px rgba(0, 0, 0, 0.12));
+    }
+
+    /* Nome */
+    h2 {
+      margin: 0;
+
+      color: #343a40;
+
+      font-size: 26px;
+
+      font-weight: 700;
+    }
+
+    /* Subtítulo */
+    .subtitulo {
+      margin: 6px 0 0;
+
+      color: #777;
+
+      font-size: 14px;
+    }
+
+    /* Separador */
+    .separador {
+      width: 60px;
+      height: 3px;
+
+      background: #adb5bd;
+
+      border-radius: 10px;
+
+      margin: 20px auto 25px;
+    }
+
+    /* Campos */
+    input {
+      width: 100%;
+
+      padding: 14px 15px;
+
+      margin: 7px 0;
+
+      border: 1px solid #d6d9dc;
+
+      border-radius: 9px;
+
+      background: #f8f9fa;
+
+      color: #343a40;
+
+      font-size: 15px;
+
+      outline: none;
+
+      transition: 0.3s;
+    }
+
+    /* Foco nos campos */
+    input:focus {
+      border-color: #8c9399;
+
+      background: #ffffff;
+
+      box-shadow:
+        0 0 0 3px rgba(108, 117, 125, 0.12);
+    }
+
+    /* Botão */
+    button {
+      width: 100%;
+
+      padding: 14px;
+
+      margin-top: 15px;
+
+      border: none;
+
+      border-radius: 9px;
+
+      background: #495057;
+
+      color: #ffffff;
+
+      font-size: 16px;
+
+      font-weight: bold;
+
+      cursor: pointer;
+
+      transition: 0.3s;
+    }
+
+    /* Hover */
+    button:hover {
+      background: #343a40;
+
+      transform: translateY(-2px);
+
+      box-shadow:
+        0 6px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Clique */
+    button:active {
+      transform: translateY(0);
+    }
+
+    /* Rodapé */
+    .rodape {
+      margin-top: 20px;
+
+      color: #999;
+
+      font-size: 12px;
+    }
+
+    /* Responsivo */
+    @media (max-width: 480px) {
+
+      body {
+        padding: 15px;
+      }
+
+      .container {
+        padding: 30px 20px;
+      }
+
+      .logo-area img {
+        width: 125px;
+      }
+
+      h2 {
+        font-size: 23px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <!-- Logo centralizada e em destaque -->
+    <div class="logo-area">
+
+      <img
+        src="montclair.png"
+        alt="Logo Hospital Montclair"
+      >
+
+      
+
+      <p class="subtitulo">
+        Centro Hospitalar
+      </p>
+
+    </div>
+
+    <div class="separador"></div>
+
+    <!-- Login -->
+    <input
+      id="usuario"
+      type="text"
+      placeholder="Usuário"
+      autocomplete="username"
+    >
+
+    <input
+      id="senha"
+      type="password"
+      placeholder="Senha"
+      autocomplete="current-password"
+    >
+
+    <button onclick="login()">
+      Entrar
+    </button>
+
+    <div class="rodape">
+      Acesso restrito aos colaboradores
+    </div>
+
+  </div>
+
+
+  <script>
+    function login() {
+
+      const usuario = document.getElementById("usuario").value;
+      const senha = document.getElementById("senha").value;
+
+      fetch("http://localhost:3000/login", {
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+          usuario: usuario,
+          senha: senha
+        })
+      })
+
+      .then(r => r.json())
+
+      .then(data => {
+
+        if (data.tipo === "triagem") {
+          location.href = "triagem.html";
+        }
+
+        if (data.tipo === "medico") {
+          location.href = "medico.html";
+        }
+
+        if (data.tipo === "atendimento") {
+          location.href = "atendimento.html";
+        }
+
+      })
+
+      .catch(error => {
+
+        console.error("Erro ao realizar login:", error);
+
+        alert("Não foi possível conectar ao servidor.");
+
+      });
+    }
+  </script>
+
+</body>
+</html>
