@@ -741,6 +741,128 @@
 
     <div class="form-group">
 
+      <label for="dataNascimento">
+        Data de nascimento
+      </label>
+
+      <input
+        id="dataNascimento"
+        type="date"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="sexo">
+        Sexo
+      </label>
+
+      <input
+        id="sexo"
+        type="text"
+        placeholder="Digite o sexo"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="nomeMae">
+        Nome da mãe
+      </label>
+
+      <input
+        id="nomeMae"
+        type="text"
+        placeholder="Digite o nome da mãe"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="estadoCivil">
+        Estado civil
+      </label>
+
+      <input
+        id="estadoCivil"
+        type="text"
+        placeholder="Digite o estado civil"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="endereco">
+        Endereço
+      </label>
+
+      <input
+        id="endereco"
+        type="text"
+        placeholder="Digite o endereço completo"
+        autocomplete="street-address"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="telefone">
+        Telefone
+      </label>
+
+      <input
+        id="telefone"
+        type="tel"
+        placeholder="Digite o telefone"
+        autocomplete="tel"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="email">
+        E-mail
+      </label>
+
+      <input
+        id="email"
+        type="email"
+        placeholder="Digite o e-mail"
+        autocomplete="email"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="contatoEmergencia">
+        Contato de emergência
+      </label>
+
+      <input
+        id="contatoEmergencia"
+        type="text"
+        placeholder="Digite o contato de emergência"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
       <label for="tipo">
         Tipo de atendimento
       </label>
@@ -815,21 +937,101 @@
 
     function cadastrar() {
 
+      const nome =
+        document.getElementById("nome").value;
+
+      const cpf =
+        document.getElementById("cpf").value;
+
+      const dataNascimento =
+        document.getElementById("dataNascimento").value;
+
+      const sexo =
+        document.getElementById("sexo").value;
+
+      const nomeMae =
+        document.getElementById("nomeMae").value;
+
+      const estadoCivil =
+        document.getElementById("estadoCivil").value;
+
+      const endereco =
+        document.getElementById("endereco").value;
+
+      const telefone =
+        document.getElementById("telefone").value;
+
+      const email =
+        document.getElementById("email").value;
+
+      const contatoEmergencia =
+        document.getElementById("contatoEmergencia").value;
+
+      const tipo =
+        document.getElementById("tipo").value;
+
+
+      /* =====================================
+         VALIDAÇÃO DOS CAMPOS OBRIGATÓRIOS
+      ====================================== */
+
+      if (!nome.trim()) {
+
+        alert("Digite o nome do paciente.");
+
+        document.getElementById("nome").focus();
+
+        return;
+      }
+
+
+      if (!cpf.trim()) {
+
+        alert("Digite o CPF do paciente.");
+
+        document.getElementById("cpf").focus();
+
+        return;
+      }
+
+
+      /* =====================================
+         ENVIO PARA O BACKEND
+      ====================================== */
+
       fetch("http://localhost:3000/atendimento", {
 
         method: "POST",
 
         headers: {
+
           "Content-Type": "application/json"
+
         },
 
         body: JSON.stringify({
 
-          nome: nome.value,
+          nome: nome,
 
-          cpf: cpf.value,
+          cpf: cpf,
 
-          tipo: tipo.value
+          dataNascimento: dataNascimento,
+
+          sexo: sexo,
+
+          nomeMae: nomeMae,
+
+          estadoCivil: estadoCivil,
+
+          endereco: endereco,
+
+          telefone: telefone,
+
+          email: email,
+
+          contatoEmergencia: contatoEmergencia,
+
+          tipo: tipo
 
         })
 
@@ -838,7 +1040,11 @@
       .then(response => {
 
         if (!response.ok) {
-          throw new Error("Erro ao cadastrar paciente.");
+
+          throw new Error(
+            "Erro ao cadastrar paciente."
+          );
+
         }
 
         return response.json().catch(() => ({}));
@@ -847,7 +1053,38 @@
 
       .then(() => {
 
-        alert("Paciente enviado para triagem.");
+        alert(
+          "Paciente enviado para triagem."
+        );
+
+
+        /* =====================================
+           LIMPA O FORMULÁRIO
+        ====================================== */
+
+        document.getElementById("nome").value = "";
+
+        document.getElementById("cpf").value = "";
+
+        document.getElementById("dataNascimento").value = "";
+
+        document.getElementById("sexo").value = "";
+
+        document.getElementById("nomeMae").value = "";
+
+        document.getElementById("estadoCivil").value = "";
+
+        document.getElementById("endereco").value = "";
+
+        document.getElementById("telefone").value = "";
+
+        document.getElementById("email").value = "";
+
+        document.getElementById("contatoEmergencia").value = "";
+
+        document.getElementById("tipo").value = "Convenio";
+
+        document.getElementById("foto").value = "";
 
       })
 
@@ -855,7 +1092,9 @@
 
         console.error(error);
 
-        alert("Não foi possível cadastrar o paciente.");
+        alert(
+          "Não foi possível cadastrar o paciente."
+        );
 
       });
 
@@ -864,4 +1103,5 @@
   </script>
 
 </body>
+
 </html>
