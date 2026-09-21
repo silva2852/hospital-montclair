@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Hospital Montclair - Consulta</title>
+
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Biblioteca para gerar PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f4f6f9;
+      color: #333;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 900px;
+      margin: 30px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      margin-top: 0;
+      color: #1f4e79;
+    }
+
+    h3 {
+      color: #1f4e79;
+      margin-top: 0;
+    }
+
+    .paciente-card {
+      background: #f0f4ff;
+      border: 1px solid #d0d8f0;
+      border-radius: 10px;
+      padding: 18px;
+      margin-bottom: 25px;
+    }
+
+    .paciente-card p {
+      margin: 8px 0;
+    }
+
+    .risco {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .vermelho {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    .amarelo {
+      background: #fff3cd;
+      color: #856404;
+    }
+
+    .verde {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .campo {
+      margin-bottom: 20px;
+    }
+
+    .campo label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 7px;
+    }
+
+    textarea,
+    select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 7px;
+      font-size: 15px;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    select {
+      background: white;
+      cursor: pointer;
+    }
+
+    .botoes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 25px;
+    }
+
+    button {
+      border: none;
+      padding: 11px 16px;
+      border-radius: 7px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .btn-salvar {
+      background: #28a745;
+      color: white;
+    }
+
+    .btn-salvar:hover {
+      background: #218838;
+    }
+
+    .btn-alta {
+      background: #dc3545;
+      color: white;
+    }
+
+    .btn-alta:hover {
+      background: #c82333;
+    }
+
+    .btn-pdf {
+      background: #6f42c1;
+      color: white;
+    }
+
+    .btn-pdf:hover {
+      background: #59339d;
+    }
+
+    .btn-internacao {
+      background: #007bff;
+      color: white;
+    }
+
+    .btn-internacao:hover {
+      background: #0056b3;
+    }
+
+    .btn-voltar {
+      background: #6c757d;
+      color: white;
+    }
+
+    .btn-voltar:hover {
+      background: #545b62;
+    }
+
+    .mensagem {
+      display: none;
+      padding: 12px;
+      margin-top: 15px;
+      border-radius: 7px;
+      font-weight: bold;
+    }
+
+    .sucesso {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .erro {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        width: 95%;
+        padding: 20px;
+        margin: 15px auto;
+      }
+
+      .botoes {
+        flex-direction: column;
+      }
+
+      .botoes button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <h2>🩺 Consulta Médica</h2>
+
+    <!-- =====================================================
+         PACIENTE
+    ====================================================== -->
+
+    <div id="paciente-card" class="paciente-card">
+      <h3>Paciente selecionado</h3>
+
+      <p>
+        <strong>Nome:</strong>
+        <span id="nome-paciente">Carregando...</span>
+      </p>
+
+      <p>
+        <strong>Risco:</strong>
+        <span id="risco-paciente">-</span>
+      </p>
+
+      <p>
+        <strong>Sintoma:</strong>
+        <span id="sintoma-paciente">-</span>
+      </p>
+
+      <p>
+        <strong>Temperatura:</strong>
+        <span id="temperatura-paciente">-</span>
+      </p>
+
+      <p>
+        <strong>Alergia:</strong>
+        <span id="alergia-paciente">-</span>
+      </p>
+
+      <p>
+        <strong>Observação da triagem:</strong>
+        <span id="observacao-paciente">-</span>
+      </p>
+    </div>
+
+    <!-- =====================================================
+         DIAGNÓSTICO
+    ====================================================== -->
+
+    <div class="campo">
+      <label for="diagnostico">
+        Diagnóstico
+      </label>
+
+      <textarea
+        id="diagnostico"
+        placeholder="Digite o diagnóstico do paciente..."
+      ></textarea>
+    </div>
+
+    <!-- =====================================================
+         MEDICAÇÃO
+    ====================================================== -->
+
+    <div class="campo">
+      <label for="medicacao">
+        Medicação
+      </label>
+
+      <select id="medicacao">
+        <option value="">Selecione uma medicação</option>
+      </select>
+    </div>
+
+    <!-- =====================================================
+         OBSERVAÇÕES
+    ====================================================== -->
+
+    <div class="campo">
+      <label for="obs">
+        Observações
+      </label>
+
+      <textarea
+        id="obs"
+        placeholder="Digite observações adicionais..."
+      ></textarea>
+    </div>
+
+    <!-- =====================================================
+         MENSAGEM
+    ====================================================== -->
+
+    <div id="mensagem" class="mensagem"></div>
+
+    <!-- =====================================================
+         BOTÕES
+    ====================================================== -->
+
+    <div class="botoes">
+
+      <!-- SALVAR CONSULTA -->
+      <button
+        class="btn-salvar"
+        onclick="salvarConsulta()"
+      >
+        💾 Salvar consulta
+      </button>
+
+      <!-- DAR ALTA -->
+      <button
+        class="btn-alta"
+        onclick="darAlta()"
+      >
+        🏠 Dar alta
+      </button>
+
+      <!-- PDF -->
+      <button
+        class="btn-pdf"
+        onclick="baixarPDF()"
+      >
+        📄 Baixar PDF da alta/diagnóstico
+      </button>
+
+      <!-- INTERNAÇÃO -->
+      <button
+        class="btn-internacao"
+        onclick="irParaInternacao()"
+      >
+        🏥 Internação
+      </button>
+
+      <!-- VOLTAR -->
+      <button
+        class="btn-voltar"
+        onclick="voltarPacientes()"
+      >
+        ← Voltar para pacientes
+      </button>
+
+    </div>
+
+  </div>
+
+  <script>
+
+    // =====================================================
+    // RECUPERAR PACIENTE
+    // =====================================================
+
+    let paciente = null;
+
+    function carregarPaciente() {
+
+      const dados = localStorage.getItem("pacienteConsulta");
+
+      if (!dados) {
+
+        document.getElementById("nome-paciente").textContent =
+          "Nenhum paciente selecionado";
+
+        return;
+      }
+
+      try {
+
+        paciente = JSON.parse(dados);
+
+        document.getElementById("nome-paciente").textContent =
+          paciente.nome || "Não informado";
+
+        document.getElementById("sintoma-paciente").textContent =
+          paciente.sintoma || "Não informado";
+
+        document.getElementById("temperatura-paciente").textContent =
+          paciente.temperatura
+            ? paciente.temperatura + "°C"
+            : "Não informada";
+
+        document.getElementById("alergia-paciente").textContent =
+          paciente.alergia || "Nenhuma";
+
+        document.getElementById("observacao-paciente").textContent =
+          paciente.observacao || "Nenhuma";
+
+        const riscoElemento =
+          document.getElementById("risco-paciente");
+
+        riscoElemento.textContent =
+          paciente.risco || "Não informado";
+
+        riscoElemento.className =
+          "risco " + (paciente.risco || "");
+
+      } catch (erro) {
+
+        console.error(
+          "Erro ao carregar paciente:",
+          erro
+        );
+
+        mostrarMensagem(
+          "Não foi possível carregar os dados do paciente.",
+          "erro"
+        );
+      }
+    }
+
+
+    // =====================================================
+    // CARREGAR MEDICAÇÕES
+    // =====================================================
+
+    function carregarMedicacoes() {
+
+      fetch("/lista-medicacoes")
+
+        .then(response => {
+
+          if (!response.ok) {
+            throw new Error(
+              "Erro ao carregar medicações."
+            );
+          }
+
+          return response.json();
+
+        })
+
+        .then(medicacoes => {
+
+          const select =
+            document.getElementById("medicacao");
+
+          medicacoes.forEach(medicacao => {
+
+            const option =
+              document.createElement("option");
+
+            option.value = medicacao;
+            option.textContent = medicacao;
+
+            select.appendChild(option);
+
+          });
+
+        })
+
+        .catch(error => {
+
+          console.error(
+            "Erro ao carregar medicações:",
+            error
+          );
+
+        });
+    }
+
+
+    // =====================================================
+    // SALVAR CONSULTA
+    // =====================================================
+
+    function salvarConsulta() {
+
+      if (!paciente) {
+
+        mostrarMensagem(
+          "Nenhum paciente foi selecionado.",
+          "erro"
+        );
+
+        return;
+      }
+
+      const diagnostico =
+        document.getElementById("diagnostico").value.trim();
+
+      const medicacao =
+        document.getElementById("medicacao").value;
+
+      const obs =
+        document.getElementById("obs").value.trim();
+
+
+      if (!diagnostico) {
+
+        mostrarMensagem(
+          "Digite o diagnóstico antes de salvar.",
+          "erro"
+        );
+
+        return;
+      }
+
+
+      fetch("/consulta", {
+
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+
+          paciente: paciente,
+
+          diagnostico: diagnostico,
+
+          medicacao: medicacao,
+
+          obs: obs
+
+        })
+
+      })
+
+      .then(response => {
+
+        if (!response.ok) {
+          throw new Error(
+            "Erro ao salvar consulta."
+          );
+        }
+
+        return response.json();
+
+      })
+
+      .then(() => {
+
+        mostrarMensagem(
+          "✅ Consulta salva com sucesso!",
+          "sucesso"
+        );
+
+      })
+
+      .catch(error => {
+
+        console.error(
+          "Erro ao salvar consulta:",
+          error
+        );
+
+        mostrarMensagem(
+          "❌ Não foi possível salvar a consulta.",
+          "erro"
+        );
+
+      });
+    }
+
+
+    // =====================================================
+    // IR PARA INTERNAÇÃO
+    // =====================================================
+
+    function irParaInternacao() {
+
+      if (!paciente) {
+
+        alert(
+          "❌ Nenhum paciente foi selecionado."
+        );
+
+        return;
+      }
+
+      /*
+       * O paciente já está salvo no localStorage
+       * como "pacienteConsulta".
+       *
+       * Não precisamos criar outro paciente.
+       * A página internacao.html vai utilizar
+       * exatamente esse mesmo paciente.
+       */
+
+      window.location.href = "internacao.html";
+    }
+
+
+    // =====================================================
+    // DAR ALTA
+    // =====================================================
+
+    function darAlta() {
+
+      if (!paciente) {
+
+        mostrarMensagem(
+          "Nenhum paciente foi selecionado.",
+          "erro"
+        );
+
+        return;
+      }
+
+
+      const diagnostico =
+        document.getElementById("diagnostico").value.trim();
+
+      const medicacao =
+        document.getElementById("medicacao").value;
+
+      const obs =
+        document.getElementById("obs").value.trim();
+
+
+      const confirmar =
+        confirm(
+          "Deseja realmente dar alta para " +
+          paciente.nome +
+          "?"
+        );
+
+
+      if (!confirmar) {
+        return;
+      }
+
+
+      /*
+       * Se houver informações preenchidas,
+       * salva a consulta antes da alta.
+       */
+
+      fetch("/consulta", {
+
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+
+          paciente: paciente,
+
+          diagnostico: diagnostico,
+
+          medicacao: medicacao,
+
+          obs: obs
+
+        })
+
+      })
+
+      .then(response => {
+
+        if (!response.ok) {
+          throw new Error(
+            "Erro ao salvar consulta."
+          );
+        }
+
+        return response.json();
+
+      })
+
+      .then(() => {
+
+        gerarPDF();
+
+        localStorage.removeItem(
+          "pacienteConsulta"
+        );
+
+        alert(
+          "✅ Alta realizada com sucesso!"
+        );
+
+        window.location.href =
+          "medico.html";
+
+      })
+
+      .catch(error => {
+
+        console.error(
+          "Erro ao dar alta:",
+          error
+        );
+
+        mostrarMensagem(
+          "❌ Não foi possível realizar a alta.",
+          "erro"
+        );
+
+      });
+    }
+
+
+    // =====================================================
+    // GERAR PDF
+    // =====================================================
+
+    function gerarPDF() {
+
+      if (!paciente) {
+        return;
+      }
+
+      const {
+        jsPDF
+      } = window.jspdf;
+
+      const doc =
+        new jsPDF();
+
+
+      let y = 20;
+
+
+      // Título
+      doc.setFontSize(18);
+
+      doc.text(
+        "Hospital Montclair",
+        20,
+        y
+      );
+
+
+      y += 12;
+
+
+      doc.setFontSize(14);
+
+      doc.text(
+        "Alta / Diagnóstico",
+        20,
+        y
+      );
+
+
+      y += 15;
+
+
+      doc.setFontSize(11);
+
+
+      doc.text(
+        "Paciente: " +
+        (paciente.nome || "Não informado"),
+        20,
+        y
+      );
+
+      y += 8;
+
+
+      doc.text(
+        "Sintoma: " +
+        (paciente.sintoma || "Não informado"),
+        20,
+        y
+      );
+
+      y += 8;
+
+
+      doc.text(
+        "Temperatura: " +
+        (
+          paciente.temperatura
+            ? paciente.temperatura + "°C"
+            : "Não informada"
+        ),
+        20,
+        y
+      );
+
+      y += 8;
+
+
+      doc.text(
+        "Alergia: " +
+        (paciente.alergia || "Nenhuma"),
+        20,
+        y
+      );
+
+      y += 8;
+
+
+      doc.text(
+        "Risco: " +
+        (paciente.risco || "Não informado"),
+        20,
+        y
+      );
+
+      y += 15;
+
+
+      const diagnostico =
+        document
+          .getElementById("diagnostico")
+          .value || "Não informado";
+
+
+      const medicacao =
+        document
+          .getElementById("medicacao")
+          .value || "Nenhuma";
+
+
+      const obs =
+        document
+          .getElementById("obs")
+          .value || "Nenhuma";
+
+
+      doc.setFontSize(12);
+
+      doc.text(
+        "Diagnóstico:",
+        20,
+        y
+      );
+
+      y += 7;
+
+
+      doc.setFontSize(11);
+
+      const linhasDiagnostico =
+        doc.splitTextToSize(
+          diagnostico,
+          170
+        );
+
+      doc.text(
+        linhasDiagnostico,
+        20,
+        y
+      );
+
+
+      y +=
+        linhasDiagnostico.length * 6 + 8;
+
+
+      doc.setFontSize(12);
+
+      doc.text(
+        "Medicação:",
+        20,
+        y
+      );
+
+
+      y += 7;
+
+
+      doc.setFontSize(11);
+
+      const linhasMedicacao =
+        doc.splitTextToSize(
+          medicacao,
+          170
+        );
+
+      doc.text(
+        linhasMedicacao,
+        20,
+        y
+      );
+
+
+      y +=
+        linhasMedicacao.length * 6 + 8;
+
+
+      doc.setFontSize(12);
+
+      doc.text(
+        "Observações:",
+        20,
+        y
+      );
+
+
+      y += 7;
+
+
+      doc.setFontSize(11);
+
+      const linhasObs =
+        doc.splitTextToSize(
+          obs,
+          170
+        );
+
+      doc.text(
+        linhasObs,
+        20,
+        y
+      );
+
+
+      y +=
+        linhasObs.length * 6 + 15;
+
+
+      doc.setFontSize(10);
+
+      doc.text(
+        "Documento gerado pelo sistema Hospital Montclair.",
+        20,
+        y
+      );
+
+
+      const nomeArquivo =
+        "Alta_" +
+        (paciente.nome || "Paciente")
+          .replace(/[^a-zA-Z0-9À-ÿ ]/g, "")
+          .replace(/\s+/g, "_") +
+        ".pdf";
+
+
+      doc.save(nomeArquivo);
+    }
+
+
+    // =====================================================
+    // BOTÃO BAIXAR PDF
+    // =====================================================
+
+    function baixarPDF() {
+
+      if (!paciente) {
+
+        mostrarMensagem(
+          "Nenhum paciente foi selecionado.",
+          "erro"
+        );
+
+        return;
+      }
+
+      gerarPDF();
+    }
+
+
+    // =====================================================
+    // VOLTAR
+    // =====================================================
+
+    function voltarPacientes() {
+
+      window.location.href =
+        "medico.html";
+    }
+
+
+    // =====================================================
+    // MENSAGENS
+    // =====================================================
+
+    function mostrarMensagem(
+      texto,
+      tipo
+    ) {
+
+      const mensagem =
+        document.getElementById("mensagem");
+
+      mensagem.textContent = texto;
+
+      mensagem.className =
+        "mensagem " + tipo;
+
+      mensagem.style.display =
+        "block";
+
+
+      setTimeout(() => {
+
+        mensagem.style.display =
+          "none";
+
+      }, 4000);
+    }
+
+
+    // =====================================================
+    // INICIALIZAÇÃO
+    // =====================================================
+
+    carregarPaciente();
+
+    carregarMedicacoes();
+
+  </script>
+
+</body>
+
+</html>

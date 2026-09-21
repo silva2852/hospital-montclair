@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Hospital Montclair - Internação</title>
+
+  <link rel="stylesheet" href="css/style.css">
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f4f6f9;
+    }
+
+    .container {
+      width: 95%;
+      max-width: 1000px;
+      margin: 30px auto;
+      background: white;
+      padding: 25px;
+      border-radius: 14px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.10);
+    }
+
+    /* CABEÇALHO */
+
+    .cabecalho {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+    }
+
+    .cabecalho h2 {
+      margin: 0;
+    }
+
+    .btn-voltar {
+      background: #6c757d;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 7px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .btn-voltar:hover {
+      background: #5a6268;
+    }
+
+    /* PACIENTE */
+
+    .paciente-card {
+      background: #e8f5e9;
+      border: 1px solid #81c784;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 25px;
+    }
+
+    .paciente-card h3 {
+      margin-top: 0;
+      color: #2e7d32;
+    }
+
+    .dados {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .dado {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 7px;
+      padding: 12px;
+    }
+
+    .dado strong {
+      display: block;
+      margin-bottom: 5px;
+      color: #555;
+    }
+
+    /* LEITOS */
+
+    .titulo {
+      margin-top: 25px;
+      margin-bottom: 8px;
+    }
+
+    .descricao {
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    .leitos {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+    }
+
+    .leito {
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      padding: 18px;
+      background: white;
+    }
+
+    .leito.disponivel {
+      border-color: #28a745;
+      background: #f3fff5;
+    }
+
+    .leito.ocupado {
+      border-color: #dc3545;
+      background: #fff5f5;
+    }
+
+    .leito h3 {
+      margin-top: 0;
+    }
+
+    .disponivel-texto {
+      color: #198754;
+      font-weight: bold;
+    }
+
+    .ocupado-texto {
+      color: #dc3545;
+      font-weight: bold;
+    }
+
+    .btn-selecionar {
+      width: 100%;
+      border: none;
+      background: #198754;
+      color: white;
+      padding: 10px;
+      border-radius: 7px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-top: 8px;
+    }
+
+    .btn-selecionar:hover {
+      background: #157347;
+    }
+
+    .btn-selecionar:disabled {
+      background: #999;
+      cursor: not-allowed;
+    }
+
+    /* SELECIONADO */
+
+    .confirmacao {
+      display: none;
+      margin-top: 25px;
+      padding: 20px;
+      background: #f0f4ff;
+      border: 1px solid #c5d0f0;
+      border-radius: 10px;
+    }
+
+    .confirmacao h3 {
+      margin-top: 0;
+    }
+
+    .btn-confirmar {
+      background: #6f42c1;
+      color: white;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 7px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-top: 12px;
+    }
+
+    .btn-confirmar:hover {
+      background: #59339d;
+    }
+
+    .btn-confirmar:disabled {
+      background: #999;
+      cursor: not-allowed;
+    }
+
+    /* MENSAGEM */
+
+    .mensagem {
+      display: none;
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 8px;
+      font-weight: bold;
+      white-space: pre-line;
+    }
+
+    .mensagem.sucesso {
+      display: block;
+      background: #d1e7dd;
+      color: #0f5132;
+    }
+
+    .mensagem.erro {
+      display: block;
+      background: #f8d7da;
+      color: #842029;
+    }
+
+    /* RESPONSIVO */
+
+    @media (max-width: 750px) {
+
+      .leitos {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .dados {
+        grid-template-columns: 1fr;
+      }
+
+    }
+
+    @media (max-width: 500px) {
+
+      .container {
+        width: 95%;
+        padding: 18px;
+      }
+
+      .leitos {
+        grid-template-columns: 1fr;
+      }
+
+      .cabecalho {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .btn-voltar {
+        width: 100%;
+      }
+
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- CABEÇALHO -->
+
+  <div class="cabecalho">
+
+    <h2>
+      🏥 Internação
+    </h2>
+
+    <button
+      class="btn-voltar"
+      onclick="voltarParaConsultas()">
+
+      ← Voltar para consultas
+
+    </button>
+
+  </div>
+
+
+  <!-- PACIENTE -->
+
+  <div class="paciente-card">
+
+    <h3>
+      👤 Paciente selecionado
+    </h3>
+
+    <div class="dados">
+
+      <div class="dado">
+
+        <strong>Nome</strong>
+
+        <span id="nome">
+          -
+        </span>
+
+      </div>
+
+
+      <div class="dado">
+
+        <strong>Risco</strong>
+
+        <span id="risco">
+          -
+        </span>
+
+      </div>
+
+
+      <div class="dado">
+
+        <strong>Sintoma</strong>
+
+        <span id="sintoma">
+          -
+        </span>
+
+      </div>
+
+
+      <div class="dado">
+
+        <strong>Temperatura</strong>
+
+        <span id="temperatura">
+          -
+        </span>
+
+      </div>
+
+
+      <div class="dado">
+
+        <strong>Alergia</strong>
+
+        <span id="alergia">
+          -
+        </span>
+
+      </div>
+
+
+      <div class="dado">
+
+        <strong>Observação</strong>
+
+        <span id="observacao">
+          -
+        </span>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- LEITOS -->
+
+  <h3 class="titulo">
+    🛏️ Escolha o leito ou apartamento
+  </h3>
+
+  <p class="descricao">
+    Selecione um local que esteja disponível para realizar a internação do paciente.
+  </p>
+
+
+  <div
+    id="leitos"
+    class="leitos">
+
+    <p>
+      Carregando leitos...
+    </p>
+
+  </div>
+
+
+  <!-- CONFIRMAÇÃO -->
+
+  <div
+    id="confirmacao"
+    class="confirmacao">
+
+    <h3>
+      🏥 Internação selecionada
+    </h3>
+
+    <p>
+      <strong>Paciente:</strong>
+      <span id="paciente-confirmacao">
+        -
+      </span>
+    </p>
+
+    <p>
+      <strong>Local:</strong>
+      <span id="leito-confirmacao">
+        -
+      </span>
+    </p>
+
+    <button
+      id="btn-confirmar"
+      class="btn-confirmar"
+      onclick="confirmarInternacao()">
+
+      🏥 Confirmar internação
+
+    </button>
+
+  </div>
+
+
+  <!-- MENSAGEM -->
+
+  <div
+    id="mensagem"
+    class="mensagem">
+  </div>
+
+</div>
+
+
+<script>
+
+let paciente = null;
+let leitoSelecionado = null;
+
+
+/* =====================================================
+   CARREGAR PACIENTE
+   ===================================================== */
+
+function carregarPaciente() {
+
+  /*
+    Primeiro procura o paciente enviado
+    pelo botão Internação.
+  */
+
+  let dados =
+    localStorage.getItem(
+      "pacienteInternacao"
+    );
+
+
+  /*
+    Caso não exista, tenta pegar o paciente
+    que já estava sendo utilizado nas consultas.
+  */
+
+  if (!dados) {
+
+    dados =
+      localStorage.getItem(
+        "pacienteConsulta"
+      );
+
+  }
+
+
+  if (!dados) {
+
+    mostrarMensagem(
+      "❌ Nenhum paciente foi selecionado.",
+      "erro"
+    );
+
+    return;
+
+  }
+
+
+  try {
+
+    paciente =
+      JSON.parse(dados);
+
+  }
+
+  catch (erro) {
+
+    console.error(erro);
+
+    mostrarMensagem(
+      "❌ Não foi possível carregar os dados do paciente.",
+      "erro"
+    );
+
+    return;
+
+  }
+
+
+  document.getElementById("nome").textContent =
+    paciente.nome || "Não informado";
+
+
+  document.getElementById("risco").textContent =
+    paciente.risco || "Não informado";
+
+
+  document.getElementById("sintoma").textContent =
+    paciente.sintoma || "Não informado";
+
+
+  document.getElementById("temperatura").textContent =
+    paciente.temperatura
+      ? paciente.temperatura + "°C"
+      : "Não informada";
+
+
+  document.getElementById("alergia").textContent =
+    paciente.alergia || "Nenhuma";
+
+
+  document.getElementById("observacao").textContent =
+    paciente.observacao || "Nenhuma";
+
+}
+
+
+/* =====================================================
+   CARREGAR LEITOS
+   ===================================================== */
+
+function carregarLeitos() {
+
+  fetch("/leitos")
+
+    .then(response => {
+
+      if (!response.ok) {
+
+        throw new Error(
+          "Erro ao carregar leitos."
+        );
+
+      }
+
+      return response.json();
+
+    })
+
+    .then(leitos => {
+
+      const div =
+        document.getElementById("leitos");
+
+      div.innerHTML = "";
+
+
+      if (!leitos || leitos.length === 0) {
+
+        div.innerHTML =
+          "<p>Nenhum leito cadastrado.</p>";
+
+        return;
+
+      }
+
+
+      leitos.forEach(leito => {
+
+        const disponivel =
+          leito.status === "disponivel";
+
+
+        const card =
+          document.createElement("div");
+
+
+        card.className =
+          "leito " +
+          (
+            disponivel
+              ? "disponivel"
+              : "ocupado"
+          );
+
+
+        card.innerHTML = `
+
+          <h3>
+            🛏️ ${leito.numero}
+          </h3>
+
+          <p>
+            <strong>Tipo:</strong>
+            ${leito.tipo}
+          </p>
+
+          ${
+            disponivel
+
+              ?
+
+              `
+              <p class="disponivel-texto">
+                🟢 Disponível
+              </p>
+
+              <button
+                class="btn-selecionar"
+                onclick="selecionarLeito('${leito.numero}')">
+
+                Selecionar
+
+              </button>
+              `
+
+              :
+
+              `
+              <p class="ocupado-texto">
+                🔴 Ocupado
+              </p>
+
+              <button
+                class="btn-selecionar"
+                disabled>
+
+                Indisponível
+
+              </button>
+              `
+
+          }
+
+        `;
+
+
+        div.appendChild(card);
+
+      });
+
+    })
+
+    .catch(erro => {
+
+      console.error(erro);
+
+      document.getElementById(
+        "leitos"
+      ).innerHTML =
+
+        `
+        <p style="color:#dc3545;">
+          ❌ Não foi possível carregar os leitos.
+        </p>
+        `;
+
+    });
+
+}
+
+
+/* =====================================================
+   SELECIONAR LEITO
+   ===================================================== */
+
+function selecionarLeito(numero) {
+
+  if (!paciente) {
+
+    alert(
+      "❌ Nenhum paciente foi selecionado."
+    );
+
+    return;
+
+  }
+
+
+  fetch("/leitos")
+
+    .then(response =>
+      response.json()
+    )
+
+    .then(leitos => {
+
+      const leito =
+        leitos.find(
+          item =>
+            String(item.numero) ===
+            String(numero)
+        );
+
+
+      if (!leito) {
+
+        alert(
+          "❌ Leito não encontrado."
+        );
+
+        return;
+
+      }
+
+
+      if (
+        leito.status !==
+        "disponivel"
+      ) {
+
+        alert(
+          "❌ Esse local não está mais disponível."
+        );
+
+        carregarLeitos();
+
+        return;
+
+      }
+
+
+      leitoSelecionado =
+        leito;
+
+
+      document.getElementById(
+        "paciente-confirmacao"
+      ).textContent =
+        paciente.nome;
+
+
+      document.getElementById(
+        "leito-confirmacao"
+      ).textContent =
+        leito.tipo +
+        " - " +
+        leito.numero;
+
+
+      document.getElementById(
+        "confirmacao"
+      ).style.display =
+        "block";
+
+
+      document.getElementById(
+        "confirmacao"
+      ).scrollIntoView({
+        behavior: "smooth"
+      });
+
+    })
+
+    .catch(erro => {
+
+      console.error(erro);
+
+      alert(
+        "❌ Não foi possível selecionar o leito."
+      );
+
+    });
+
+}
+
+
+/* =====================================================
+   CONFIRMAR INTERNAÇÃO
+   ===================================================== */
+
+function confirmarInternacao() {
+
+  if (!paciente) {
+
+    alert(
+      "❌ Nenhum paciente selecionado."
+    );
+
+    return;
+
+  }
+
+
+  if (!leitoSelecionado) {
+
+    alert(
+      "⚠️ Selecione um leito ou apartamento."
+    );
+
+    return;
+
+  }
+
+
+  const confirmar =
+    confirm(
+
+      "Confirmar internação?\n\n" +
+
+      "Paciente: " +
+      paciente.nome +
+
+      "\nLocal: " +
+      leitoSelecionado.tipo +
+      " " +
+      leitoSelecionado.numero
+
+    );
+
+
+  if (!confirmar) {
+    return;
+  }
+
+
+  const botao =
+    document.getElementById(
+      "btn-confirmar"
+    );
+
+
+  botao.disabled =
+    true;
+
+
+  botao.textContent =
+    "⏳ Realizando internação...";
+
+
+  fetch("/internacao", {
+
+    method: "POST",
+
+    headers: {
+
+      "Content-Type":
+        "application/json"
+
+    },
+
+    body: JSON.stringify({
+
+      paciente: paciente,
+
+      leito:
+        leitoSelecionado.numero
+
+    })
+
+  })
+
+  .then(response => {
+
+    return response.json()
+      .then(data => {
+
+        if (!response.ok) {
+
+          throw new Error(
+            data.erro ||
+            "Erro ao realizar internação."
+          );
+
+        }
+
+        return data;
+
+      });
+
+  })
+
+  .then(data => {
+
+    mostrarMensagem(
+
+      "✅ INTERNAÇÃO REALIZADA COM SUCESSO!\n\n" +
+
+      "Paciente: " +
+      paciente.nome +
+
+      "\nLocal: " +
+      data.leito.tipo +
+      " " +
+      data.leito.numero,
+
+      "sucesso"
+
+    );
+
+
+    /*
+      Remove os dados temporários.
+    */
+
+    localStorage.removeItem(
+      "pacienteInternacao"
+    );
+
+
+    localStorage.removeItem(
+      "pacienteConsulta"
+    );
+
+
+    botao.disabled =
+      true;
+
+
+    botao.textContent =
+      "✅ Internação realizada";
+
+
+    leitoSelecionado =
+      null;
+
+
+    /*
+      Atualiza os leitos na tela.
+    */
+
+    carregarLeitos();
+
+  })
+
+  .catch(erro => {
+
+    console.error(erro);
+
+    alert(
+      "❌ " +
+      erro.message
+    );
+
+
+    botao.disabled =
+      false;
+
+
+    botao.textContent =
+      "🏥 Confirmar internação";
+
+  });
+
+}
+
+
+/* =====================================================
+   VOLTAR
+   ===================================================== */
+
+function voltarParaConsultas() {
+
+  window.location.href =
+    "consultas.html";
+
+}
+
+
+/* =====================================================
+   MENSAGEM
+   ===================================================== */
+
+function mostrarMensagem(
+  texto,
+  tipo
+) {
+
+  const elemento =
+    document.getElementById(
+      "mensagem"
+    );
+
+
+  elemento.textContent =
+    texto;
+
+
+  elemento.className =
+    "mensagem " +
+    tipo;
+
+}
+
+
+/* =====================================================
+   INICIAR
+   ===================================================== */
+
+carregarPaciente();
+
+carregarLeitos();
+
+</script>
+
+</body>
+</html>
